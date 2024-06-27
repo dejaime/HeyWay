@@ -1,0 +1,11 @@
+All 3D assets courtesy of Kenney.nl at https://www.kenney.nl
+
+
+kenney_mini-arena
+kenney_mini-dungeon
+kenney_mini-skate
+kenney_graveyard-kit
+kenney_food-kit
+
+
+https://creativecommons.org/publicdomain/zero/1.0/
