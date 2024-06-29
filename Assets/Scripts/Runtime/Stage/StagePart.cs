@@ -14,6 +14,7 @@ namespace HayWay.Runtime.Components
         StageController m_stage;
         List<SpawnableStagePartObject> m_spawns = new List<SpawnableStagePartObject>();
 
+       
         internal override void OnStoredInPool()
         {
             RecycleMaySpawns();
@@ -25,20 +26,12 @@ namespace HayWay.Runtime.Components
             base.OnPickFromPool(position, parent, stayWorldPosition,args);
         }
 
-        /// <summary>
-        /// Add this coin in this stage part setting the stagePart of the coin.
-        /// </summary>
-        /// <param name="coin"></param>
         internal void AddSpaw(SpawnableStagePartObject spawnObj)
         {
             m_spawns.Add(spawnObj);
             spawnObj.SetStage(this);
         }
 
-        /// <summary>
-        /// Remove this coin of this stage part Seting the coin stage to null
-        /// </summary>
-        /// <param name="coin"></param>
         internal void RemoveSpawn(SpawnableStagePartObject spawnObj)
         {
             m_spawns.Remove(spawnObj);

@@ -11,7 +11,7 @@ namespace HayWay.Runtime.Components
         [SerializeField] private float m_lanePadding = 1;
         [SerializeField] private float m_maxTravelerDistance = 50;
         [SerializeField] private float m_recycleDistance = 10;
-        [SerializeField] private float m_startActivedParts = 10;
+        [SerializeField] private List<StagePart> m_startActivedParts = new List<StagePart>();
         [SerializeField] private List<PoolController> m_parts = new List<PoolController>();
         [SerializeField] private List<SpawnStagePartBehaviour> m_spawners = new List<SpawnStagePartBehaviour>();
 
@@ -32,13 +32,12 @@ namespace HayWay.Runtime.Components
             PooleabeObject.OnPickFromPoolEvent -= OnPickFromPool;
         }
 
-        private void Start()
+        private IEnumerator Start()
         {
-            float lastZpart = 0;
-            for (int i = 0; i < m_startActivedParts; i++)
+            foreach (var part in m_startActivedParts)
             {
-                StagePart part = GetRandomPart(new Vector3(0, 0, lastZpart));
-                lastZpart = part.transform.position.z + part.Size;
+                activedParts.Add(part);
+                yield return null;
             }
         }
 
@@ -161,10 +160,10 @@ namespace HayWay.Runtime.Components
         private void OnPickFromPool(PooleabeObject po)
         {
             if (po is not StagePart) return;
-           
+
             StartCoroutine(IESpawn(po));
         }
-      
+
         IEnumerator IESpawn(PooleabeObject po)
         {
             if (!po.IsActived) { yield break; }
@@ -174,7 +173,7 @@ namespace HayWay.Runtime.Components
                 if (!po.IsActived) { yield break; }
 
                 spawner.Execute((StagePart)po);
-                yield return null;  
+                yield return null;
             }
         }
 

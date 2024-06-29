@@ -22,7 +22,7 @@ namespace HayWay.Runtime.Components
             return goPooler;
         }
 
-        private PoolController m_pool = null;
+        [SerializeField] private PoolController m_pool = null;
 
         public PoolController Pool => m_pool;
         public bool IsPolled => Pool != null;
@@ -31,7 +31,13 @@ namespace HayWay.Runtime.Components
 
         public virtual void Awake()
         {
-            gameObject.SetActive(false);
+            if (m_pool == null)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+            
+            m_pool.SetToActiveds(this);
         }
 
         public virtual void SetPool(PoolController pool)
@@ -64,7 +70,7 @@ namespace HayWay.Runtime.Components
             }
             gameObject.SetActive(true);
             OnPickFromPoolEvent?.Invoke(this);
-           
+
         }
 
         /// <summary>
@@ -72,7 +78,7 @@ namespace HayWay.Runtime.Components
         /// </summary>
         internal virtual void OnStoredInPool()
         {
-            
+
             gameObject.transform.SetParent(null);
             gameObject.SetActive(false);
             OnStoredInPoolEvent?.Invoke(this);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,36 +35,7 @@ namespace HayWay.Runtime.Components
             unactivedPollers.Add(pooler);
         }
 
-        /*
-        public bool IsColliding(Vector3 position, float radius, int layerMask = -1)
-        {
-            Collider[] colliders = Physics.OverlapSphere(position, radius, layerMask, QueryTriggerInteraction.Collide);
-            foreach (var collider in colliders)
-            {
-                if (collider.CompareTag("Spawn") == false) continue;
-
-                return true;
-            }
-            return false;
-        }
-
-        public void RemoveOthers(Vector3 position, float radius, int layerMask = -1)
-        {
-            Collider[] colliders = Physics.OverlapSphere(position, radius, layerMask, QueryTriggerInteraction.Collide);
-
-            foreach (var collider in colliders)
-            {
-                if (collider.CompareTag("Spawn") == false) continue;
-
-                if (collider.TryGetComponent<PooleabeObject>(out PooleabeObject hitpool))
-                {
-                    if (hitpool is StagePart) { continue; }
-                    Debug.Log($"Removing {hitpool.gameObject.name}");
-                    hitpool.Recycle();
-                }
-            }
-        }
-        */
+       
         /// <summary>
         /// Retorna um objeto da lista de pools que nao esta sendo usado no momento. Expand sera usado se nao ouver um objeto para pegar.
         /// Tenha em mente que este objeto nao esta pronto para ser usado, ele serve somente para buscar informacoes.
@@ -121,6 +93,9 @@ namespace HayWay.Runtime.Components
             }
         }
 
-
+        internal void SetToActiveds(PooleabeObject pooleabeObject)
+        {
+            activedPollers.Add(pooleabeObject);
+        }
     }
 }

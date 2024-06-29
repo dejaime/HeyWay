@@ -7,13 +7,21 @@ namespace HayWay.Runtime.Components
     public abstract class SpawnableStagePartObject : PooleabeObject
     {
 
-        private StagePart m_StagePart;
+        [SerializeField] private StagePart m_StagePart;
         public StagePart StagePart => m_StagePart;
         public abstract Vector3 Size { get; }
         public abstract Vector3 SizeOffset { get; }
         public abstract SpawnableAreaType AreaType { get; }
 
+        public override void Awake()
+        {
+            if (m_StagePart != null)
+            {
+                m_StagePart.AddSpaw(this);
+            }
+            base.Awake();
 
+        }
         public void SetStage(StagePart stagePart)
         {
             m_StagePart = stagePart;
@@ -37,11 +45,11 @@ namespace HayWay.Runtime.Components
                 case SpawnableAreaType.SPHERE:
                     Gizmos.DrawWireSphere(transform.position + this.SizeOffset, this.Size.magnitude);
                     break;
-                 case SpawnableAreaType.BOX:
+                case SpawnableAreaType.BOX:
                     Gizmos.DrawWireCube(transform.position + this.SizeOffset, this.Size);
                     break;
             }
-           
+
 
         }
     }
