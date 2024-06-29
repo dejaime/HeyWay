@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
+using HayWay.Runtime.Extensions;
 
 namespace HayWay.Runtime.Components
 {
@@ -13,18 +13,32 @@ namespace HayWay.Runtime.Components
         [SerializeField] private float m_recycleDistance = 10;
         [SerializeField] private float m_startActivedParts = 10;
         [SerializeField] private List<PoolController> m_parts = new List<PoolController>();
-        List<PooleabeObject> activedParts = new List<PooleabeObject>();
+        [SerializeField] private List<SpawnStagePartBehaviour> m_spawners = new List<SpawnStagePartBehaviour>();
+
+        List<StagePart> activedParts = new List<StagePart>();
 
         float lastRestoredTime = 0; //Prevent repetitive restoration of position
+
+        private void Awake()
+        {
+            m_spawners.Reverse();
+        }
+        private void OnEnable()
+        {
+            PooleabeObject.OnPickFromPoolEvent += OnPickFromPool;
+        }
+        private void OnDisable()
+        {
+            PooleabeObject.OnPickFromPoolEvent -= OnPickFromPool;
+        }
 
         private void Start()
         {
             float lastZpart = 0;
             for (int i = 0; i < m_startActivedParts; i++)
             {
-
                 StagePart part = GetRandomPart(new Vector3(0, 0, lastZpart));
-                lastZpart = part.transform.position.z + part.size;
+                lastZpart = part.transform.position.z + part.Size;
             }
         }
 
@@ -40,6 +54,11 @@ namespace HayWay.Runtime.Components
         {
             return m_lanePadding * index;
         }
+        public float GetRandomLane(int min, int max)
+        {
+            int index = Random.Range(min, max + 1);
+            return GetLane(index);
+        }
         public void UpdateStage(PlayerController player)
         {
             EvalueActivedParts(player);
@@ -49,8 +68,9 @@ namespace HayWay.Runtime.Components
         private StagePart GetRandomPart(Vector3 position)
         {
             int rnd = Random.Range(0, m_parts.Count);
-            activedParts.Add(m_parts[rnd].GetPool(position));
-            return (StagePart)activedParts.Last();
+            StagePart part = m_parts[rnd].GetPool<StagePart>(position, args: this);
+            activedParts.Add(part);
+            return activedParts.Last();
         }
         private StagePart GetLastActivedPart()
         {
@@ -74,13 +94,13 @@ namespace HayWay.Runtime.Components
         private float GetLastActivedPartPositionFoward()
         {
             StagePart lastpart = GetLastActivedPart();
-            float z = lastpart.transform.position.z + lastpart.size;
+            float z = lastpart.transform.position.z + lastpart.Size;
             return z;
         }
         private void EvalueActivedParts(PlayerController player)
         {
             //Recycling and creating new part
-            List<PooleabeObject> toRecycle = new List<PooleabeObject>();
+            List<StagePart> toRecycle = new List<StagePart>();
 
             //Get Recycling
             foreach (var part in activedParts)
@@ -137,6 +157,27 @@ namespace HayWay.Runtime.Components
             player.RefreshPosition();
             Destroy(group);
         }
+
+        private void OnPickFromPool(PooleabeObject po)
+        {
+            if (po is not StagePart) return;
+           
+            StartCoroutine(IESpawn(po));
+        }
+      
+        IEnumerator IESpawn(PooleabeObject po)
+        {
+            if (!po.IsActived) { yield break; }
+
+            foreach (var spawner in m_spawners)
+            {
+                if (!po.IsActived) { yield break; }
+
+                spawner.Execute((StagePart)po);
+                yield return null;  
+            }
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;

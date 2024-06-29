@@ -11,7 +11,7 @@ PrefabInstance:
     - target: {fileID: 3863572927425102398, guid: f6a51dd197334f04c800d366a63137d9,
         type: 3}
       propertyPath: m_Name
-      value: StagePart Variant
+      value: Stage Part Narrow 1
       objectReference: {fileID: 0}
     - target: {fileID: 6985915231824982184, guid: f6a51dd197334f04c800d366a63137d9,
         type: 3}

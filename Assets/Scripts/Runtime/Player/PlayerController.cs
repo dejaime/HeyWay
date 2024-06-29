@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace HayWay.Runtime.Components
 {
+    [RequireComponent(typeof(Collider))]
     public class PlayerController : MonoBehaviour
     {
 

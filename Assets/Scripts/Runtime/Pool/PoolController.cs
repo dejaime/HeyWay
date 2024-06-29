@@ -1,0 +1,126 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
+
+namespace HayWay.Runtime.Components
+{
+    [DefaultExecutionOrder(-1000)]
+    public class PoolController : MonoBehaviour
+    {
+        public GameObject prefab = null;
+        public int startQnt = 10;
+        public bool allowExpand = true;
+
+        List<PooleabeObject> activedPollers = new List<PooleabeObject>();
+        List<PooleabeObject> unactivedPollers = new List<PooleabeObject>();
+
+        private void Awake()
+        {
+            CreatInitialPool();
+        }
+
+        private void CreatInitialPool()
+        {
+            for (int i = 0; i < startQnt; i++)
+            {
+                Expand();
+            }
+        }
+        private void Expand()
+        {
+            PooleabeObject pooler = PooleabeObject.Create(this, prefab);
+            unactivedPollers.Add(pooler);
+        }
+
+        /*
+        public bool IsColliding(Vector3 position, float radius, int layerMask = -1)
+        {
+            Collider[] colliders = Physics.OverlapSphere(position, radius, layerMask, QueryTriggerInteraction.Collide);
+            foreach (var collider in colliders)
+            {
+                if (collider.CompareTag("Spawn") == false) continue;
+
+                return true;
+            }
+            return false;
+        }
+
+        public void RemoveOthers(Vector3 position, float radius, int layerMask = -1)
+        {
+            Collider[] colliders = Physics.OverlapSphere(position, radius, layerMask, QueryTriggerInteraction.Collide);
+
+            foreach (var collider in colliders)
+            {
+                if (collider.CompareTag("Spawn") == false) continue;
+
+                if (collider.TryGetComponent<PooleabeObject>(out PooleabeObject hitpool))
+                {
+                    if (hitpool is StagePart) { continue; }
+                    Debug.Log($"Removing {hitpool.gameObject.name}");
+                    hitpool.Recycle();
+                }
+            }
+        }
+        */
+        /// <summary>
+        /// Retorna um objeto da lista de pools que nao esta sendo usado no momento. Expand sera usado se nao ouver um objeto para pegar.
+        /// Tenha em mente que este objeto nao esta pronto para ser usado, ele serve somente para buscar informacoes.
+        /// Para spawn utilize <see cref="GetPool{T}(Vector3, Transform, bool, object[])"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetSpyPool<T>() where T : PooleabeObject
+        {
+            if (unactivedPollers.Count == 0 && allowExpand)
+            {
+                Expand();
+            }
+
+            PooleabeObject go = unactivedPollers.FirstOrDefault();
+            if (go == null) { return null; }
+            return (T)go;
+
+        }
+        /// <summary>
+        /// Retorna um objeto da lista de pools. Este objeto esta pronto para uso. 
+        /// Se voce deseja receber um obejto apenas para espiar, utilize <see cref="GetSpyPool{T}"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="position"></param>
+        /// <param name="parent"></param>
+        /// <param name="stayWordposition"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public T GetPool<T>(Vector3 position, Transform parent = null, bool stayWordposition = true, params object[] args) where T : PooleabeObject
+        {
+            if (unactivedPollers.Count == 0 && allowExpand)
+            {
+                Expand();
+            }
+
+            PooleabeObject go = unactivedPollers.FirstOrDefault();
+            if (go == null) { return null; }
+            unactivedPollers.Remove(go);
+            activedPollers.Add(go);
+            go.OnPickFromPool(position, parent, stayWordposition, args);
+            return (T)go;
+        }
+        public void RecycleToPool(PooleabeObject go)
+        {
+            if (activedPollers.Remove(go))
+            {
+                unactivedPollers.Add(go);
+                go.OnStoredInPool();
+            }
+            else
+            {
+
+                Debug.LogError($"RecycleToPool {go?.name} fail bause it is not in the own list ");
+            }
+        }
+
+
+    }
+}
