@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 namespace HayWay.Runtime.Components
 {
+    [RequireComponent(typeof(PlayerController))]
     public class PlayerHealth : MonoBehaviour, IDamageable
     {
         public static event Action<PlayerHealth> OnPlayerHealthChange;
@@ -11,11 +12,17 @@ namespace HayWay.Runtime.Components
         [SerializeField] private int m_startHealth = 3;
         [SerializeField] private int m_maxHealth = 3;
         [SerializeField] private int m_maxHealthMax = 10;
+        [SerializeField] private float m_invencibleSecondsAfterDamage = 1;
         [SerializeField] private UnityEvent<IDamageable> OnDamagedEvent;
         [SerializeField] private UnityEvent<IDamageable> OnDamagedRestoredEvent;
 
+        PlayerController player;
         private int currentHealth;
 
+        private void Awake()
+        {
+            player = GetComponent<PlayerController>();
+        }
         private void Start()
         {
             currentHealth = m_startHealth;
@@ -45,12 +52,29 @@ namespace HayWay.Runtime.Components
         //===================================================================
         // IDAMAGEABLE INTERFACE
         //================================================================
+
+        /// <summary>
+        /// Take the damage and add  time <see cref="m_invencibleSecondsAfterDamage"/> of invencibility
+        /// </summary>
+        /// <param name="value"></param>
         public void TakeDamage(int value)
         {
+            if (player.IsDead) { return; }
+            if (player.IsInvencible) { return; }
+
             currentHealth -= value;
             CheckHelath();
             OnDamagedEvent?.Invoke(this);
             OnPlayerHealthChange?.Invoke(this);
+
+            if (currentHealth == 0)
+            {
+                player.SetDead(true);
+            }
+            else
+            {
+                player.SetInvencible(m_invencibleSecondsAfterDamage);
+            }
         }
         public void RestoreHealth(int value)
         {
@@ -84,11 +108,11 @@ namespace HayWay.Runtime.Components
         }
         public void IncreaseMaxHealth()
         {
-           
+
             if (m_maxHealth >= m_maxHealthMax) { return; }
             m_maxHealth += 1;
             RestoreHealth(1);
-            
+
         }
     }
 }

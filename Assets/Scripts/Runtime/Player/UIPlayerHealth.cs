@@ -22,7 +22,6 @@ namespace HayWay.Runtime.Components
         {
             int curentHealth = playerHealth.GetHealth();
 
-            Debug.Log(curentHealth);
             SimplePooleableObject[] hearts = m_hearthsContentPanel.GetComponentsInChildren<SimplePooleableObject>(false);
             if (hearts.Length < curentHealth)
             {

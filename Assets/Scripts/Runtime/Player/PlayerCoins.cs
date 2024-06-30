@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 namespace HayWay.Runtime.Components
 {
+    [RequireComponent(typeof(PlayerController))]
     public class PlayerCoins : MonoBehaviour
     {
         public static event Action<PlayerCoins> OnPlayerCoinsChanged;
@@ -14,7 +15,12 @@ namespace HayWay.Runtime.Components
         [SerializeField] private UnityEvent<PlayerCoins> OnCoinRemovedEvent;
 
         int currentCoin = 0;
+        PlayerController player;
 
+        private void Awake()
+        {
+            player = GetComponent<PlayerController>();
+        }
         private void Start()
         {
             OnPlayerCoinsChanged?.Invoke(this);
