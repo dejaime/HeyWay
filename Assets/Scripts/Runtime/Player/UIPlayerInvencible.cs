@@ -13,7 +13,6 @@ namespace HayWay.Runtime.Components
 
         IEnumerator corotine;
 
-        float amount = 0;
         private void Awake()
         {
             m_panelContent.gameObject.SetActive(false);

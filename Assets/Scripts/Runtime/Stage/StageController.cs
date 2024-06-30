@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using HayWay.Runtime.Extensions;
+using System;
 
 namespace HayWay.Runtime.Components
 {
     public class StageController : MonoBehaviour
     {
+        public static event Action<StageController> OnLoopBack;
+
         [SerializeField] private float m_lanePadding = 1;
         [SerializeField] private float m_maxTravelerDistance = 50;
         [SerializeField] private float m_recycleDistance = 10;
@@ -19,7 +22,6 @@ namespace HayWay.Runtime.Components
 
         float lastRestoredTime = 0; //Prevent repetitive restoration of position
        
-
         private void Awake()
         {
            // m_spawners.Reverse();
@@ -31,6 +33,7 @@ namespace HayWay.Runtime.Components
         private void OnDisable()
         {
             PooleabeBehaviour.OnPickFromPoolEvent -= OnPickFromPool;
+            OnLoopBack=null;
         }
 
         private IEnumerator Start()
@@ -56,18 +59,18 @@ namespace HayWay.Runtime.Components
         }
         public float GetRandomLane(int min, int max)
         {
-            int index = Random.Range(min, max + 1);
+            int index = UnityEngine.Random.Range(min, max + 1);
             return GetLane(index);
         }
         public void UpdateStage(PlayerController player)
         {
             EvalueActivedParts(player);
-            EvalueRestorePosition(player);
+            EvalueLoopBack(player);
         }
 
         private StagePart GetRandomPart(Vector3 position)
         {
-            int rnd = Random.Range(0, m_parts.Count);
+            int rnd = UnityEngine.Random.Range(0, m_parts.Count);
             StagePart part = m_parts[rnd].GetPool<StagePart>(position, args: this);
             activedParts.Add(part);
             return activedParts.Last();
@@ -123,7 +126,7 @@ namespace HayWay.Runtime.Components
                 }
             }
         }
-        private void EvalueRestorePosition(PlayerController player)
+        private void EvalueLoopBack(PlayerController player)
         {
             //Recover start position
             //***** ALGORITM**************************************************************************
@@ -156,6 +159,7 @@ namespace HayWay.Runtime.Components
             player.transform.SetParent(null);
             player.RefreshPosition();
             Destroy(group);
+            OnLoopBack?.Invoke(this);
         }
 
         private void OnPickFromPool(PooleabeBehaviour po)
