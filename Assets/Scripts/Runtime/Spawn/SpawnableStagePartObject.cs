@@ -17,7 +17,7 @@ namespace HayWay.Runtime.Components
         [SerializeField, Attributes.Tag] private string m_obstacleTag = "";
         [SerializeField] private LayerMask m_checkLayerMask;
         [SerializeField] private bool m_destroyObstacles = false;
-
+    
         private Collider m_Collider;
 
         public StagePart StagePart => m_StagePart;
@@ -67,10 +67,11 @@ namespace HayWay.Runtime.Components
             {
                 if (!collider.CompareTag(m_obstacleTag)) { continue; }
                 if (collider.gameObject == gameObject) { continue; }
-                if (collider.TryGetComponent<SpawnableStagePartObject>(out var p_obj))
-                {
-                    p_obj.Recycle();
-                }
+                if (!collider.TryGetComponent<SpawnableStagePartObject>(out var p_obj)) { continue; }
+                if (p_obj.StagePart != this.StagePart) { continue; }
+
+                p_obj.Recycle();
+
             }
         }
 

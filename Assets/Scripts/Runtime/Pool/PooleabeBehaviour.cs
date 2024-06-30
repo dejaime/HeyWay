@@ -23,10 +23,11 @@ namespace HayWay.Runtime.Components
         }
 
         [SerializeField] private PoolController m_pool = null;
-
+        private bool recycling = false;
         public PoolController Pool => m_pool;
         public bool IsPolled => Pool != null;
         public bool IsActived => gameObject.activeSelf;
+        public bool IsRecycling => recycling;   
         public Vector3 Position => transform.position;
 
         public virtual void Awake()
@@ -46,7 +47,7 @@ namespace HayWay.Runtime.Components
         }
         public virtual void Recycle()
         {
-
+            recycling=true;
             m_pool.RecycleToPool(this);
         }
 
@@ -81,6 +82,7 @@ namespace HayWay.Runtime.Components
 
             gameObject.transform.SetParent(null);
             gameObject.SetActive(false);
+            recycling = false;
             OnStoredInPoolEvent?.Invoke(this);
 
         }
