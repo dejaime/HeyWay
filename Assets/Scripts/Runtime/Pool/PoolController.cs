@@ -14,8 +14,8 @@ namespace HayWay.Runtime.Components
         public int startQnt = 10;
         public bool allowExpand = true;
 
-        List<PooleabeObject> activedPollers = new List<PooleabeObject>();
-        List<PooleabeObject> unactivedPollers = new List<PooleabeObject>();
+        List<PooleabeBehaviour> activedPollers = new List<PooleabeBehaviour>();
+        List<PooleabeBehaviour> unactivedPollers = new List<PooleabeBehaviour>();
 
         private void Awake()
         {
@@ -31,7 +31,7 @@ namespace HayWay.Runtime.Components
         }
         private void Expand()
         {
-            PooleabeObject pooler = PooleabeObject.Create(this, prefab);
+            PooleabeBehaviour pooler = PooleabeBehaviour.Create(this, prefab);
             unactivedPollers.Add(pooler);
         }
 
@@ -43,14 +43,14 @@ namespace HayWay.Runtime.Components
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T GetSpyPool<T>() where T : PooleabeObject
+        public T GetSpyPool<T>() where T : PooleabeBehaviour
         {
             if (unactivedPollers.Count == 0 && allowExpand)
             {
                 Expand();
             }
 
-            PooleabeObject go = unactivedPollers.FirstOrDefault();
+            PooleabeBehaviour go = unactivedPollers.FirstOrDefault();
             if (go == null) { return null; }
             return (T)go;
 
@@ -65,21 +65,22 @@ namespace HayWay.Runtime.Components
         /// <param name="stayWordposition"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public T GetPool<T>(Vector3 position, Transform parent = null, bool stayWordposition = true, params object[] args) where T : PooleabeObject
+        public T GetPool<T>(Vector3 position, Transform parent = null, bool stayWordposition = true, params object[] args) where T : PooleabeBehaviour
         {
             if (unactivedPollers.Count == 0 && allowExpand)
             {
                 Expand();
             }
 
-            PooleabeObject go = unactivedPollers.FirstOrDefault();
+            PooleabeBehaviour go = unactivedPollers.FirstOrDefault();
             if (go == null) { return null; }
             unactivedPollers.Remove(go);
             activedPollers.Add(go);
             go.OnPickFromPool(position, parent, stayWordposition, args);
+
             return (T)go;
         }
-        public void RecycleToPool(PooleabeObject go)
+        public void RecycleToPool(PooleabeBehaviour go)
         {
             if (activedPollers.Remove(go))
             {
@@ -93,7 +94,7 @@ namespace HayWay.Runtime.Components
             }
         }
 
-        internal void SetToActiveds(PooleabeObject pooleabeObject)
+        internal void SetToActiveds(PooleabeBehaviour pooleabeObject)
         {
             activedPollers.Add(pooleabeObject);
         }

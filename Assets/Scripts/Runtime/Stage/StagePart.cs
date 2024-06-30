@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HayWay.Runtime.Components
 {
-    public class StagePart : PooleabeObject
+    public class StagePart : PooleabeBehaviour
     {
         [SerializeField] private float m_size = 6;
 

@@ -18,18 +18,19 @@ namespace HayWay.Runtime.Components
         List<StagePart> activedParts = new List<StagePart>();
 
         float lastRestoredTime = 0; //Prevent repetitive restoration of position
+       
 
         private void Awake()
         {
-            m_spawners.Reverse();
+           // m_spawners.Reverse();
         }
         private void OnEnable()
         {
-            PooleabeObject.OnPickFromPoolEvent += OnPickFromPool;
+            PooleabeBehaviour.OnPickFromPoolEvent += OnPickFromPool;
         }
         private void OnDisable()
         {
-            PooleabeObject.OnPickFromPoolEvent -= OnPickFromPool;
+            PooleabeBehaviour.OnPickFromPoolEvent -= OnPickFromPool;
         }
 
         private IEnumerator Start()
@@ -78,7 +79,7 @@ namespace HayWay.Runtime.Components
         private StagePart GetActivednearPart(Vector3 position)
         {
             float distance = Mathf.Infinity;
-            PooleabeObject result = null;
+            PooleabeBehaviour result = null;
             foreach (var part in activedParts)
             {
                 float relativeDist = part.GetDistance(position);
@@ -157,14 +158,14 @@ namespace HayWay.Runtime.Components
             Destroy(group);
         }
 
-        private void OnPickFromPool(PooleabeObject po)
+        private void OnPickFromPool(PooleabeBehaviour po)
         {
             if (po is not StagePart) return;
 
             StartCoroutine(IESpawn(po));
         }
 
-        IEnumerator IESpawn(PooleabeObject po)
+        IEnumerator IESpawn(PooleabeBehaviour po)
         {
             if (!po.IsActived) { yield break; }
 

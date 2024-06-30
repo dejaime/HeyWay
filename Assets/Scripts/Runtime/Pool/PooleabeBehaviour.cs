@@ -4,20 +4,20 @@ using UnityEngine;
 
 namespace HayWay.Runtime.Components
 {
-    public abstract class PooleabeObject : MonoBehaviour
+    public abstract class PooleabeBehaviour : MonoBehaviour
     {
-        public static event Action<PooleabeObject> OnPickFromPoolEvent;
-        public static event Action<PooleabeObject> OnStoredInPoolEvent;
+        public static event Action<PooleabeBehaviour> OnPickFromPoolEvent;
+        public static event Action<PooleabeBehaviour> OnStoredInPoolEvent;
 
-        public static PooleabeObject Create(PoolController pool, GameObject prefab)
+        public static PooleabeBehaviour Create(PoolController pool, GameObject prefab)
         {
-            GameObject go = Instantiate(prefab);
-            PooleabeObject goPooler = go.GetComponent<PooleabeObject>();
-            if (goPooler == null)
+            if(!prefab.TryGetComponent<PooleabeBehaviour>(out var prefabPooler))
             {
-                goPooler = go.AddComponent<PooleabeObject>();
+                Debug.LogError($"Impossible to create poller object of the {prefab.name}, because this object have not none implementation of PooleabeBehaviour");
+                return null;
             }
 
+            PooleabeBehaviour goPooler = Instantiate(prefabPooler);
             goPooler.SetPool(pool);
             return goPooler;
         }

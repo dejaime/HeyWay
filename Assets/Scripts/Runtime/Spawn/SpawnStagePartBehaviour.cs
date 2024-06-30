@@ -15,13 +15,16 @@ namespace HayWay.Runtime.Components
         [SerializeField, Range((int)0, (int)100)] private int m_ProbabilityMidleLane = 100;
         [SerializeField, Range((int)0, (int)100)] private int m_ProbabilityRightLane = 0;
 
-       // public int Priority => m_priority;
-
+        [SerializeField] private float m_delayForNextDrop = 0;
+      
+        float lastDropedTime = 0;   
         public virtual void Execute(StagePart part)
         {
             if (!enabled) { return; }
             if (!this.isActiveAndEnabled) { return; }
-            if(gameObject.activeSelf==false) { return; }
+            if (gameObject.activeSelf == false) { return; }
+
+            if(Time.time < lastDropedTime + m_delayForNextDrop) { return; }
 
             switch (m_SpawnType)
             {
@@ -67,7 +70,14 @@ namespace HayWay.Runtime.Components
                 Vector3 spawnPos = new Vector3(lanePosX, 0, lanePosZ);
                 var obj = m_Pool.GetPool<SpawnableStagePartObject>(spawnPos, part.transform, false);
                 part.AddSpaw(obj);
+
                 yield return null;
+
+                if (m_delayForNextDrop > 0)
+                {
+                    lastDropedTime = Time.time;
+                    yield break;
+                }
             }
         }
         void SpawnProbalisticLane(StagePart part)
@@ -78,8 +88,8 @@ namespace HayWay.Runtime.Components
         }
         void SpawnLane(StagePart part, int lane, int probability)
         {
-            if(probability == 0) return;
-            StartCoroutine(IESpawnLane(part,lane,probability));
+            if (probability == 0) return;
+            StartCoroutine(IESpawnLane(part, lane, probability));
         }
         IEnumerator IESpawnLane(StagePart part, int lane, int probability)
         {
@@ -98,6 +108,12 @@ namespace HayWay.Runtime.Components
                     Vector3 spawnPos = new Vector3(lanePosX, 0, lanePosZ);
                     var obj = m_Pool.GetPool<SpawnableStagePartObject>(spawnPos, part.transform, false);
                     part.AddSpaw(obj);
+
+                    if (m_delayForNextDrop > 0)
+                    {
+                        lastDropedTime=Time.time;
+                        yield break;
+                    }
                 }
                 yield return null;
             }
