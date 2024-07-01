@@ -265,6 +265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 85090018}
   - component: {fileID: 85090017}
+  - component: {fileID: 85090019}
   m_Layer: 0
   m_Name: Main Menu Controller
   m_TagString: Untagged
@@ -303,6 +304,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &85090019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85090016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bfa97b421c4ea347bd610bd1ab63bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position:
+    m_Name: Position
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 205b5619-9b50-4b0e-a846-86af6c93e0cc
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: e7847ea1-f94e-4cd1-be6a-4fba1f2cb94b
+      m_Path: <Touchscreen>/primaryTouch/position
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Position
+      m_Flags: 0
+    m_Flags: 0
+  press:
+    m_Name: Press
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: c483d8d6-9f7b-4eb5-b179-83df4782f6ff
+    m_Processors: 
+    m_Interactions: Press
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 98322b18-451c-49f5-8dfb-d2c6c67b560a
+      m_Path: <Touchscreen>/Press
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Press
+      m_Flags: 0
+    m_Flags: 0
+  swipeResistance: 100
 --- !u!1 &233771982
 GameObject:
   m_ObjectHideFlags: 0
@@ -2125,6 +2173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6355f2f963c1f4199b099c3fa50dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_swipeDectection: {fileID: 85090019}
   m_Catalogue: {fileID: 11400000, guid: be1ccf22c3c3146459ab8d2ad1544bf4, type: 2}
   m_CatalogueCharName: {fileID: 1228496792}
   m_CatalogueCharPrice: {fileID: 1535445381}

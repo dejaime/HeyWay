@@ -63,6 +63,9 @@ namespace HayWay.Runtime.Components
         [Tooltip("This is the time the player's jump will take to complete its sinusoidal movement.")]
         [SerializeField]
         private float m_StartJumpDuration = 0.75f;
+        [Header("Inputs")]
+        [SerializeField]
+        private SwipeDetection m_swipeDectection;
 
         private PlayerInputActions m_inputActions;
         private Rigidbody m_rigidBody;
@@ -143,13 +146,23 @@ namespace HayWay.Runtime.Components
             m_inputActions.Player.MoveLeft.started += OnMoveLeftInput;
             m_inputActions.Player.MoveRight.started += OnMoveRightInput;
             m_inputActions.Player.Jump.started += OnJumpInput;
+
+            if (m_swipeDectection)
+            {
+                m_swipeDectection.swipePerformed += OnSwipePerformed;
+            }
         }
+
         private void OnDisable()
         {
             m_inputActions.Player.Disable();
             m_inputActions.Player.MoveLeft.started -= OnMoveLeftInput;
             m_inputActions.Player.MoveRight.started -= OnMoveRightInput;
             m_inputActions.Player.Jump.started -= OnJumpInput;
+            if (m_swipeDectection)
+            {
+                m_swipeDectection.swipePerformed -= OnSwipePerformed;
+            }
         }
         private void OnDestroy()
         {
@@ -213,6 +226,26 @@ namespace HayWay.Runtime.Components
             m_rigidBody.MovePosition(position);
         }
 
+        private void OnSwipePerformed(Vector2 direction)
+        {
+            if (direction.x > 0)
+            {
+                if (currentLaneIndex >= 1) { return; }
+                currentLaneIndex++;
+            }
+            else if (direction.x < 0)
+            {
+                if (currentLaneIndex <= -1) { return; }
+                currentLaneIndex--;
+            }
+            else if (direction.y > 0)
+            {
+                if (!isJumping)
+                {
+                    StartJump();
+                }
+            }
+        }
         private void OnMoveLeftInput(InputAction.CallbackContext context)
         {
             if (currentLaneIndex <= -1) { return; }

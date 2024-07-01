@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,6 +9,7 @@ namespace HayWay.Runtime.Components
 {
     public class UIMainMenu_Shop : MonoBehaviour
     {
+        [SerializeField] private SwipeDetection m_swipeDectection;
         [SerializeField] private DataCharactersCatalogue m_Catalogue;
         [SerializeField] private TMPro.TextMeshProUGUI m_CatalogueCharName;
         [SerializeField] private TMPro.TextMeshProUGUI m_CatalogueCharPrice;
@@ -23,6 +25,15 @@ namespace HayWay.Runtime.Components
             m_SelectedImage.gameObject.SetActive(false);
             m_ButtonBuy.gameObject.SetActive(false);
             m_Select.gameObject.SetActive(false);
+        }
+        private void OnEnable()
+        {
+            m_swipeDectection.swipePerformed += OnSwipePerformed;
+        }
+        private void OnDisable()
+        {
+            m_swipeDectection.swipePerformed -= OnSwipePerformed;
+
         }
 
         public void Refresh()
@@ -94,6 +105,18 @@ namespace HayWay.Runtime.Components
             }
 
             LocalDataBase.Save();
+        }
+
+        private void OnSwipePerformed(Vector2 direction)
+        {
+            if (direction.x > 0)
+            {
+                ShowNextCharacter();
+            }
+            else if (direction.x < 0)
+            {
+                ShowPrevCharacter();
+            }
         }
     }
 }
