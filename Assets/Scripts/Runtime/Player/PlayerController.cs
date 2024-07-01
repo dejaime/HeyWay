@@ -238,7 +238,8 @@ namespace HayWay.Runtime.Components
                 if (currentLaneIndex <= -1) { return; }
                 currentLaneIndex--;
             }
-            else if (direction.y > 0)
+            
+            if (direction.y > 0)
             {
                 if (!isJumping)
                 {
