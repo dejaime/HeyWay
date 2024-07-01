@@ -4,12 +4,15 @@ using System.Linq;
 using UnityEngine;
 using HayWay.Runtime.Extensions;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace HayWay.Runtime.Components
 {
     public class StageController : MonoBehaviour
     {
         public static event Action<StageController> OnLoopBack;
+        public static event Action<StageController> OnRestarted;
+
 
         [SerializeField] private float m_lanePadding = 1;
         [SerializeField] private float m_maxTravelerDistance = 50;
@@ -18,13 +21,31 @@ namespace HayWay.Runtime.Components
         [SerializeField] private List<PoolController> m_parts = new List<PoolController>();
         [SerializeField] private List<SpawnStagePartBehaviour> m_spawners = new List<SpawnStagePartBehaviour>();
 
-        List<StagePart> activedParts = new List<StagePart>();
+        public bool IsReady => isReady;
 
+        List<StagePart> activedParts = new List<StagePart>();
+        
         float lastRestoredTime = 0; //Prevent repetitive restoration of position
-       
-        private void Awake()
+        bool isReady = false;
+        bool isRestarting = false;
+
+        private IEnumerator Start()
         {
-           // m_spawners.Reverse();
+            isReady = false;
+            foreach (var part in m_startActivedParts)
+            {
+                activedParts.Add(part);
+                yield return null;
+            }
+
+            yield return new WaitForEndOfFrame();
+            if (isRestarting)
+            {
+                OnRestarted?.Invoke(this);
+                isRestarting = false;
+            }
+
+            isReady = true;
         }
         private void OnEnable()
         {
@@ -33,41 +54,13 @@ namespace HayWay.Runtime.Components
         private void OnDisable()
         {
             PooleabeBehaviour.OnPickFromPoolEvent -= OnPickFromPool;
-            OnLoopBack=null;
+            OnLoopBack = null;
         }
-
-        private IEnumerator Start()
+        private void OnDestroy()
         {
-            foreach (var part in m_startActivedParts)
-            {
-                activedParts.Add(part);
-                yield return null;
-            }
+            OnLoopBack = null;
+            OnRestarted = null;
         }
-
-        /// <summary>
-        /// Get a X position from a given index padding. This inde can be positive or negative and ZERO is equal of the midle lane.
-        /// <para>
-        /// Note: This function has no limitation on the amount of index for the lane.
-        /// </para>
-        /// </summary>
-        /// <param name="index">Negative index is left and positive index is right lane positions by index reference</param>
-        /// <returns></returns>
-        public float GetLane(int index)
-        {
-            return m_lanePadding * index;
-        }
-        public float GetRandomLane(int min, int max)
-        {
-            int index = UnityEngine.Random.Range(min, max + 1);
-            return GetLane(index);
-        }
-        public void UpdateStage(PlayerController player)
-        {
-            EvalueActivedParts(player);
-            EvalueLoopBack(player);
-        }
-
         private StagePart GetRandomPart(Vector3 position)
         {
             int rnd = UnityEngine.Random.Range(0, m_parts.Count);
@@ -161,14 +154,12 @@ namespace HayWay.Runtime.Components
             Destroy(group);
             OnLoopBack?.Invoke(this);
         }
-
         private void OnPickFromPool(PooleabeBehaviour po)
         {
             if (po is not StagePart) return;
 
             StartCoroutine(IESpawn(po));
         }
-
         IEnumerator IESpawn(PooleabeBehaviour po)
         {
             if (!po.IsActived) { yield break; }
@@ -180,6 +171,46 @@ namespace HayWay.Runtime.Components
                 spawner.Execute((StagePart)po);
                 yield return null;
             }
+        }
+
+        /// <summary>
+        /// Get a X position from a given index padding. This inde can be positive or negative and ZERO is equal of the midle lane.
+        /// <para>
+        /// Note: This function has no limitation on the amount of index for the lane.
+        /// </para>
+        /// </summary>
+        /// <param name="index">Negative index is left and positive index is right lane positions by index reference</param>
+        /// <returns></returns>
+        public float GetLane(int index)
+        {
+            return m_lanePadding * index;
+        }
+        public float GetRandomLane(int min, int max)
+        {
+            int index = UnityEngine.Random.Range(min, max + 1);
+            return GetLane(index);
+        }
+        public void UpdateStage(PlayerController player)
+        {
+            EvalueActivedParts(player);
+            EvalueLoopBack(player);
+        }
+        public void Restart()
+        {
+
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.buildIndex);
+
+                /*
+            isReady = false;
+            isRestarting = true;
+            foreach (var part in activedParts)
+            {
+                part.Recycle();
+            }
+
+            activedParts.Clear();
+            StartCoroutine(Start());*/
         }
 
         private void OnDrawGizmos()

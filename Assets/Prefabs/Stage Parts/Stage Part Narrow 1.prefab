@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8db8de880f0d5da489141c67281a73fa, type: 2}
+  - {fileID: 2100000, guid: 28be2155ad796ca4faa3cd29fb00ae7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -95,6 +95,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Stage Part Narrow 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3863572927425102398, guid: f6a51dd197334f04c800d366a63137d9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6985915231824982184, guid: f6a51dd197334f04c800d366a63137d9,
         type: 3}

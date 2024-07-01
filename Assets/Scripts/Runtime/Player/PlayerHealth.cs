@@ -69,7 +69,7 @@ namespace HayWay.Runtime.Components
 
             if (currentHealth == 0)
             {
-                player.SetDead(true);
+                player.SetDead();
             }
             else
             {

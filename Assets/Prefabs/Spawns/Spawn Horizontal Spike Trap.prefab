@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8db8de880f0d5da489141c67281a73fa, type: 2}
+  - {fileID: 2100000, guid: 28be2155ad796ca4faa3cd29fb00ae7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -167,7 +167,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8db8de880f0d5da489141c67281a73fa, type: 2}
+  - {fileID: 2100000, guid: 28be2155ad796ca4faa3cd29fb00ae7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -250,7 +250,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8db8de880f0d5da489141c67281a73fa, type: 2}
+  - {fileID: 2100000, guid: 28be2155ad796ca4faa3cd29fb00ae7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -335,7 +335,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8db8de880f0d5da489141c67281a73fa, type: 2}
+  - {fileID: 2100000, guid: 28be2155ad796ca4faa3cd29fb00ae7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -439,7 +439,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8db8de880f0d5da489141c67281a73fa, type: 2}
+  - {fileID: 2100000, guid: 28be2155ad796ca4faa3cd29fb00ae7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -524,7 +524,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8db8de880f0d5da489141c67281a73fa, type: 2}
+  - {fileID: 2100000, guid: 28be2155ad796ca4faa3cd29fb00ae7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -609,6 +609,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Spawn Horizontal Spike Trap
+      objectReference: {fileID: 0}
+    - target: {fileID: 3541545117653419787, guid: 9ad88bf3cc4fb534fb597ae150455e90,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5188782748673714809, guid: 9ad88bf3cc4fb534fb597ae150455e90,
         type: 3}

@@ -1,9 +1,6 @@
 
 using UnityEngine;
-using HayWay.Runtime.Economy;
-using UnityEditor.SceneManagement;
-using System.Data;
-using System.Collections;
+
 
 namespace HayWay.Runtime.Components
 {

@@ -1,0 +1,5 @@
+newmtl Material2
+map_Kd variation-a.png
+Kd 1 1 1
+d 1
+

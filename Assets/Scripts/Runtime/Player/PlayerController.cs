@@ -34,7 +34,7 @@ namespace HayWay.Runtime.Components
     public class PlayerController : MonoBehaviour
     {
         public static event Action<PlayerController> OnInvencibleChanged;
-        public static event Action<PlayerController> OnDeadChanged;
+        public static event Action<PlayerController> OnDead;
 
         [SerializeField] private StageController m_stage;
 
@@ -110,7 +110,7 @@ namespace HayWay.Runtime.Components
         public float CurrentJumpDuration => Mathf.Clamp(m_StartJumpDuration / CurrentMoveSpeedFactor, 0.33f, m_StartJumpDuration);
         public float CurentTraveledDistance => travelledDistance;
         public float CurrentMoveSpeedFactor => CurrentMoveSpeed / m_StartMoveSpeed;
-       
+
         private bool isJumping = false;
         private bool isDead = false;
         private bool isInvencible = false;
@@ -154,12 +154,17 @@ namespace HayWay.Runtime.Components
         private void OnDestroy()
         {
             OnInvencibleChanged = null;
-            OnDeadChanged = null;
+            OnDead = null;
         }
         private void Update()
         {
             debugJumpDuration = CurrentJumpDuration;
             if (isDead)
+            {
+                return;
+            }
+
+            if (!m_stage.IsReady)
             {
                 return;
             }
@@ -196,6 +201,10 @@ namespace HayWay.Runtime.Components
         private void FixedUpdate()
         {
             if (isDead)
+            {
+                return;
+            }
+            if (!m_stage.IsReady)
             {
                 return;
             }
@@ -274,17 +283,25 @@ namespace HayWay.Runtime.Components
             OnInvencibleChanged?.Invoke(this);
         }
         /// <summary>
-        /// Turn Dead or alive the player. Use the <see cref="IsDead"/> and <see cref="OnDeadChanged"/> events to work with this
+        /// Turn Dead or alive the player. Use the <see cref="IsDead"/> and <see cref="OnDead"/> events to work with this
         /// </summary>
         /// <param name="dead"></param>
-        public void SetDead(bool dead)
+        public void SetDead()
         {
-            if (dead == isDead) { return; }
+            if (isDead) { return; }
 
             invencibleElapsedTime = 0;
             invencibleTime = 0;
-            isDead = dead;
-            OnDeadChanged?.Invoke(this);
+            isDead = true;
+            OnDead?.Invoke(this);
+        }
+        public void Restart()
+        {
+            transform.position = Vector3.zero;
+            RefreshPosition();
+
+            isDead = false;
+            m_stage.Restart();
         }
     }
 
