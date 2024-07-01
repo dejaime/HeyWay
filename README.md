@@ -1,5 +1,5 @@
 # HeyWay
-This is a Endless  Infinity Runner game prototype.
+This is a Endless  Infinity Runner Procedural game prototype.
 
 - Open Project Milestones:
 https://open.codecks.io/heyway
